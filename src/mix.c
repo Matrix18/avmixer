@@ -45,8 +45,7 @@ static int16_t pcm_compress(int16_t input)
     return 0.6 +0.4*log(5.342857*input - 2.205714)/log(8.48);
 }
 
-int mix_audio_pcm_s16le(int channels, int16_t* datas[MAX_CHANNELS],
-        int lens[MAX_CHANNELS], int *datas_index)
+int mix_audio_pcm_s16le(int channels, int16_t* datas[], int lens[])
 {
     if (channels > MAX_CHANNELS) {
         return -1;
@@ -55,12 +54,10 @@ int mix_audio_pcm_s16le(int channels, int16_t* datas[MAX_CHANNELS],
     int ret = 0;
     // max numbers of int16_t
     int max_data_len = 0;
-    int max_data_index = 0;
     int i;
     for (i =0;i < channels; i++) {
         if (lens[i] > max_data_len) {
             max_data_len = lens[i];
-            max_data_index = i;
         }
      }
 
@@ -75,12 +72,10 @@ int mix_audio_pcm_s16le(int channels, int16_t* datas[MAX_CHANNELS],
               MIX_THRESHOLD_DEM*sum < MIX_THRESHOLD_NUM*MIN_SAMPLE_VALUE) {
             sum = sum>0? MAX_SAMPLE_VALUE * pcm_compress(sum): MIN_SAMPLE_VALUE * pcm_compress(sum);
         }
-
-        datas[max_data_index][j] = sum;
+        datas[0][j] = (int16_t)sum;
     }
 
-    if (datas_index)
-        *datas_index = max_data_index;
+    lens[0] = max_data_len;
 
     return ret;
 }

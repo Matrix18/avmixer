@@ -7,7 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mix.h"
-
+#include <string.h>
+#include <errno.h>
 typedef enum { false, true }bool;
 
 int mix_pcm16le(char *url){
@@ -54,35 +55,46 @@ int main(int argc, char** argv)
     int lens[MAX_CHANNELS];
     int ret;
 
+    FILE *fd=fopen("mixtest_out.pcm","wb+");
+
     for (int i=0;i < channels;i++) {
         files[i] = argv[i+1];
-        fds[i] = fopen(files[i],"wb+");
+        fds[i] = fopen(files[i],"rb+");
+        if (fds[i] == NULL) {
+            printf("open file %s failed.\n", files[i]);
+            return -1;
+        }
         buffs[i] = (int16_t*)malloc(BUFF_SIZE*sizeof(int16_t));
         lens[i] = 0;
     }
 
     while(true) {
+        // reset
         bool eof = false;
         for (int i=0;i < channels;i++) {
             eof = eof || !feof(fds[i]);
+            memset(buffs[i], 0, BUFF_BYTES_SIZE);
+            lens[i] = 0;
         }
 
         if (!eof) {
             break;
         }
+
         // read channel datas
         for (int i=0;i < channels;i++) {
             if (!feof(fds[i])) {
-                lens[i] = fread(buffs[i], sizeof(int16_t), BUFF_SIZE,fds[i]);
+                lens[i] = fread(buffs[i], sizeof(int16_t), BUFF_SIZE, fds[i]);
             }
         }
-        int data_index = -1;
-        if (mix_audio_pcm_s16le(channels, buffs, lens, &data_index) != 0) {
-            break;
+        // calculate result
+        if (mix_audio_pcm_s16le(channels, buffs, lens) != 0) {
             printf("mix error.\n");
+            break;
         }
-        if (data_index < 0 || data_index > channels) {
-            printf("get data_index error.\n");
+        // write to output
+        if (lens[0] != fwrite(buffs[0], sizeof(int16_t), lens[0], fd)) {
+            printf("write output error.\n");
             break;
         }
     }
@@ -91,6 +103,8 @@ int main(int argc, char** argv)
         fclose(fds[i]);
         free(buffs[i]);
     }
+    printf("done\n");
+    fclose(fd);
 
     return 0;
 }

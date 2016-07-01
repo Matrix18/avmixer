@@ -25,7 +25,7 @@
  * mix MAX_CHANNELS individual channels' pcm data in 16 bit.
  */
 int mix_audio_pcm_s16le(int channels, int16_t* datas[MAX_CHANNELS],
-        int lens[MAX_CHANNELS], int *datas_index);
+        int lens[MAX_CHANNELS]);
 
 
 #endif /* MIX_H_ */

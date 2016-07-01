@@ -12,6 +12,9 @@
 #include "mix.h"
 
 /*
+ * this algorithm is based on
+ * http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html
+ *
 threshold   alpha
     0                   2.51
     0.05                2.67

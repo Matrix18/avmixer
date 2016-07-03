@@ -123,7 +123,7 @@ int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
 				printf("encode_mono error.\n");
 				return -1;
 			}
-			// write to output
+			// write to output, the output data is in aac format.
 			if (len != fwrite(outbuf, sizeof(byte), outlen, outputfp)) {
 			    printf("write output error.\n");
 				return -1;

@@ -1,5 +1,5 @@
 # source files.
-OBJECTS = mix split
+OBJECTS = mix
 TARGETS= test
 CC=gcc
 ifeq ($(shell uname -s),Darwin)
@@ -15,7 +15,7 @@ SRC=./src/
 TEST_DIR=./test/
 CFLAGS+= -g
 LIBS ?= -L./objs -lm
-INCLUDES = -I./src/ -I../src/ 
+INCLUDES = -I./src/ 
 
 all:$(TARGETS)
 
@@ -39,5 +39,5 @@ clean:
 	rm -f $(OBJECT) $(LIB)
 	rm -f $(OBJ_DIR)*
 
-install:
-	cp -f $(LIB) /usr/lib
+#install:
+#	cp -f $(LIB) /usr/lib

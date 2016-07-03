@@ -9,15 +9,19 @@
 #include "mix.h"
 #include <string.h>
 #include <errno.h>
+#include "pcm_enc.h"
 
-typedef enum { false, true }bool;
+typedef enum 
+{ false, 
+  true 
+} bool;
 
 #define THRESHOLD  0.6
 
 #define BUFF_SIZE 1024
 #define BUFF_BYTES_SIZE BUFF_SIZE*sizeof(int16_t)
 
-int mix_pcm_s16le_file(char** filenames, int file_num)
+int mix_pcm_s16le_test(char** filenames, int file_num)
 {
 	int channels = file_num;
     char* files[MAX_CHANNELS];
@@ -84,6 +88,52 @@ end:
 	return ret;
 }
 
+int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
+{
+	int ret = 0;
+	FILE* inputfp = fopen(inputfile, "rb+");
+	if (inputfp == NULL) {
+        printf("open file %s failed.\n", inputfile);
+        return -1;
+    }
+	FILE* outputfp = fopen(inputfile, "wb+");
+	if (outputfp == NULL) {
+        printf("open file %s failed.\n", outputfile);
+        return -1;
+    }
+
+	convert_context *ctx = NULL;
+	ret = open_aac_encoder(&ctx);
+	if (ret != 0) {
+		printf("open aac encoder error.\n");
+		return -1;	
+	}
+	
+    byte* inbuf = malloc(BUFF_SIZE*sizeof(int16_t));
+    byte* outbuf = malloc(BUFF_SIZE*sizeof(int16_t));
+	
+	while(!feof(inputfp)) {
+		// number of int16_t
+		int len = fread(inbuf, sizeof(int16_t), BUFF_SIZE, inputfp);
+		if (len > 0) {
+			// outbuf must be less than inbuf since aac is to compress the pcm.
+			int outlen = 2*len; // bytes number
+			ret = encode_mono(ctx, inbuf, 2*len, outbuf, &outlen);
+			if (ret < 0) {
+				printf("encode_mono error.\n");
+				return -1;
+			}
+			// write to output
+			if (len != fwrite(outbuf, sizeof(byte), outlen, outputfp)) {
+			    printf("write output error.\n");
+				return -1;
+			}
+		}
+	}
+	
+	return ret;
+}
+
 
 int main(int argc, char** argv)
 {
@@ -96,7 +146,7 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (mix_pcm_s16le_file(&argv[1], argc - 1) != 0) {
+    if (mix_pcm_s16le_test(&argv[1], argc - 1) != 0) {
 		printf("mix pcm s16 files done.\n");	
 	}
 }

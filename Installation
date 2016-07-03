@@ -1,0 +1,8 @@
+Install libfdk-aac
+	Download file from http://downloads.sourceforge.net/opencore-amr/fdk-aac-0.1.4.tar.gz.
+	CXX='g++ -Wno-narrowing'     \
+	./configure --prefix=/usr    \
+            --disable-static &&
+	make
+	sudo make install
+	The header files will be in /usr/include/fdk-aac.

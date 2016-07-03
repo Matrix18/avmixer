@@ -8,6 +8,10 @@
 #ifndef MIX_H_
 #define MIX_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 #include <stdint.h>
 
 #define MAX_CHANNELS  4
@@ -35,5 +39,9 @@ extern void s16le2pcm8(int16_t* s16_data, uint8_t* u8_data, int s16_len);
  * split 
  */
 extern void split_pcm_s16le_mono2stereo(int16_t *s16_mono_data, int mono_len, int16_t **s16_stereo_data);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* MIX_H_ */

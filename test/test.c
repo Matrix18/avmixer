@@ -11,8 +11,8 @@
 #include <errno.h>
 #include "pcm_enc.h"
 
-typedef enum 
-{ false, 
+typedef enum { 
+  false, 
   true 
 } bool;
 

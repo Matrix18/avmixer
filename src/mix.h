@@ -22,10 +22,18 @@
         || (MIX_THRESHOLD_DEM*x < MIX_THRESHOLD_NUM*MIN_SAMPLE_VALUE))
 
 /*
- * mix MAX_CHANNELS individual channels' pcm data in 16 bit.
+ * Mix MAX_CHANNELS individual channels' pcm data in 16 bit.
  */
-int mix_audio_pcm_s16le(int channels, int16_t* datas[MAX_CHANNELS],
-        int lens[MAX_CHANNELS]);
+extern int mix_audio_pcm_s16le(float threshold, int channels, int16_t* datas[], int lens[]);
 
+/*
+ * Convert pcm_s16 format to pcm_u8 format
+ */
+extern void s16le2pcm8(int16_t* s16_data, uint8_t* u8_data, int s16_len);
+
+/*
+ * split 
+ */
+extern void split_pcm_s16le_mono2stereo(int16_t *s16_mono_data, int mono_len, int16_t **s16_stereo_data);
 
 #endif /* MIX_H_ */

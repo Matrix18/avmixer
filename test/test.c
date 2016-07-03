@@ -9,45 +9,17 @@
 #include "mix.h"
 #include <string.h>
 #include <errno.h>
+
 typedef enum { false, true }bool;
 
-int mix_pcm16le(char *url){
-    FILE *fp=fopen(url,"rb+");
-    FILE *fp1=fopen("output_l.pcm","wb+");
-    FILE *fp2=fopen("output_r.pcm","wb+");
-
-    unsigned char *sample=(unsigned char *)malloc(4);
-
-    while(!feof(fp)){
-        fread(sample,1,4,fp);
-        //L
-        fwrite(sample,1,2,fp1);
-        //R
-        fwrite(sample+2,1,2,fp2);
-    }
-
-    free(sample);
-    fclose(fp);
-    fclose(fp1);
-    fclose(fp2);
-    return 0;
-}
+#define THRESHOLD  0.6
 
 #define BUFF_SIZE 1024
 #define BUFF_BYTES_SIZE BUFF_SIZE*sizeof(int16_t)
 
-int main(int argc, char** argv)
+int mix_pcm_s16le_file(char** filenames, int file_num)
 {
-    if (argc == 1) {
-        printf("\n");
-        printf("Usage:\n");
-        printf("        ./mixtest <file1.pcm> <file1.pcm> ... \n");
-        printf("        the max file num is now 4 for test propose.\n");
-        printf("\n");
-        return 0;
-    }
-
-    int channels = argc - 1;
+	int channels = file_num;
     char* files[MAX_CHANNELS];
     FILE* fds[MAX_CHANNELS];
     int16_t* buffs[MAX_CHANNELS];
@@ -58,11 +30,12 @@ int main(int argc, char** argv)
     FILE *fd=fopen("mixtest_out.pcm","wb+");
 
     for (int i=0;i < channels;i++) {
-        files[i] = argv[i+1];
+        files[i] = filenames[i];
         fds[i] = fopen(files[i],"rb+");
         if (fds[i] == NULL) {
             printf("open file %s failed.\n", files[i]);
-            return -1;
+            ret = -1;
+			goto end;
         }
         buffs[i] = (int16_t*)malloc(BUFF_SIZE*sizeof(int16_t));
         lens[i] = 0;
@@ -88,23 +61,42 @@ int main(int argc, char** argv)
             }
         }
         // calculate result
-        if (mix_audio_pcm_s16le(channels, buffs, lens) != 0) {
+        if (mix_audio_pcm_s16le(THRESHOLD, channels, buffs, lens) != 0) {
             printf("mix error.\n");
+			ret = -1;
             break;
         }
         // write to output
         if (lens[0] != fwrite(buffs[0], sizeof(int16_t), lens[0], fd)) {
             printf("write output error.\n");
+			ret = -1;
             break;
         }
     }
 
+end:
     for (int i=0;i < channels;i++) {
         fclose(fds[i]);
         free(buffs[i]);
     }
-    printf("done\n");
-    fclose(fd);
 
-    return 0;
+    fclose(fd);
+	return ret;
+}
+
+
+int main(int argc, char** argv)
+{
+    if (argc == 1) {
+        printf("\n");
+        printf("Usage:\n");
+        printf("        ./mixtest <file1.pcm> <file1.pcm> ... \n");
+        printf("        the max file num is now 4 for test propose.\n");
+        printf("\n");
+        return 0;
+    }
+
+    if (mix_pcm_s16le_file(&argv[1], argc - 1) != 0) {
+		printf("mix pcm s16 files done.\n");	
+	}
 }

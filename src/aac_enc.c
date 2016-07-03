@@ -5,14 +5,17 @@
  *      Author: will
  */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <fdk-aac/aacenc_lib.h>
+#include "pcm_enc.h"
 
-static HANDLE_AACENCODER hAacEncoder = NULL;
+//static HANDLE_AACENCODER hAacEncoder = NULL;
 
 
-typedef struct {
+struct convert_context{
 	HANDLE_AACENCODER hAacEncoder;
-} convert_context;
+};
 
 
 int open_aac_encoder(convert_context** ctx)
@@ -40,7 +43,7 @@ int open_aac_encoder(convert_context** ctx)
 	return ret;
 }
 
-int encode_mono(convert_context* ctx, int16_t* pcm_s16_data, int inlen, uint8_t* outdata, int *outlen)
+int encode_mono(convert_context* ctx, byte* pcm_s16_data, int inlen, byte* outdata, int *outlen)
 {
 	int ret = 0;
 	AACENC_ERROR ErrorStatus;
@@ -52,23 +55,23 @@ int encode_mono(convert_context* ctx, int16_t* pcm_s16_data, int inlen, uint8_t*
 	void* inbufs[] = {(void*)pcm_s16_data};
 	INT inidf = IN_AUDIO_DATA;
 	INT inbufSize = inlen;
-	INT inbufElSize = sizeof(int16_t);
+	INT inbufElSize = sizeof(byte);
 	inBufDesc.numBufs = 1;
-	inBufDesc->bufs = inbufs;
-	inBufDesc->bufferIdentifiers = &inidf;
-	inBufDesc->bufSizes = &inbufSize;
-	inBufDesc->bufElSizes = &inbufElSize;
+	inBufDesc.bufs = inbufs;
+	inBufDesc.bufferIdentifiers = &inidf;
+	inBufDesc.bufSizes = &inbufSize;
+	inBufDesc.bufElSizes = &inbufElSize;
 
 	void* outbufs[] = {(void*)outdata};
 	INT outidf = OUT_BITSTREAM_DATA;
 	INT outbufSize = *outlen;
-	INT outbufElSize = sizeof(int8_t);
+	INT outbufElSize = sizeof(byte);
 
 	outBufDesc.numBufs = 1;
-	outBufDesc->bufs = outbufs;
-	outBufDesc->bufferIdentifiers = &outidf;
-	outBufDesc->bufSizes = &outbufSize;
-	outBufDesc->bufElSizes = &outbufElSize;
+	outBufDesc.bufs = outbufs;
+	outBufDesc.bufferIdentifiers = &outidf;
+	outBufDesc.bufSizes = &outbufSize;
+	outBufDesc.bufElSizes = &outbufElSize;
 
 	AACENC_InArgs inargs;
 	inargs.numInSamples = 1;
@@ -89,7 +92,7 @@ int encode_mono(convert_context* ctx, int16_t* pcm_s16_data, int inlen, uint8_t*
 		return -1;	
 	}
 	// Write output data to file or audio device.
-	outlen = outargs.numOutBytes;
+	*outlen = outargs.numOutBytes;
 
 	return ret;
 }

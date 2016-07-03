@@ -130,6 +130,8 @@ int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
 			}
 		}
 	}
+
+	close_encoder(ctx);
 	
 	return ret;
 }

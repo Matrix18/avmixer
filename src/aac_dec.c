@@ -7,6 +7,7 @@
 
 #include <fdk-aac/aacdecoder_lib.h>
 
+/*
 int open_decoder()
 {
 	aacDecoderInfo = aacDecoder_Open(mpegFileRead_GetTransportType(hDataSrc), nrOfLayers);
@@ -27,3 +28,4 @@ void close_decoder()
 {
 	ErrorStatus = aacDecoder_DecodeFrame(aacDecoderInfo, TimeData, OUT_BUF_SIZE, flags);
 }
+*/

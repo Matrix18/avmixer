@@ -12,8 +12,8 @@
 #include "pcm_enc.h"
 
 typedef enum { 
-  false, 
-  true 
+    false,
+    true
 } bool;
 
 #define THRESHOLD  0.6
@@ -91,47 +91,53 @@ end:
 int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
 {
 	int ret = 0;
-	FILE* inputfp = fopen(inputfile, "rb+");
+	FILE *inputfp, *outputfp;
+	inputfp = fopen(inputfile, "rb+");
 	if (inputfp == NULL) {
-        printf("open file %s failed.\n", inputfile);
+        fprintf(stderr, "Open file %s failed.\n", inputfile);
         return -1;
     }
-	FILE* outputfp = fopen(inputfile, "wb+");
+	outputfp = fopen(outputfile, "wb+");
 	if (outputfp == NULL) {
-        printf("open file %s failed.\n", outputfile);
+        fprintf(stderr, "Open file %s failed.\n", outputfile);
         return -1;
     }
 
 	convert_context *ctx = NULL;
-	ret = open_aac_encoder(&ctx);
+	ret = init_aac_encoder(&ctx);
 	if (ret != 0) {
-		printf("open aac encoder error.\n");
+		fprintf(stderr, "Open aac encoder error.\n");
 		return -1;	
 	}
 	
-    byte* inbuf = malloc(BUFF_SIZE*sizeof(int16_t));
-    byte* outbuf = malloc(BUFF_SIZE*sizeof(int16_t));
+    uint8_t* inbuf = (uint8_t*)malloc(BUFF_BYTES_SIZE);
+    byte* outbuf = (byte*)malloc(BUFF_BYTES_SIZE);
 	
 	while(!feof(inputfp)) {
 		// number of int16_t
 		int len = fread(inbuf, sizeof(int16_t), BUFF_SIZE, inputfp);
 		if (len > 0) {
 			// outbuf must be less than inbuf since aac is to compress the pcm.
-			int outlen = 2*len; // bytes number
+			int outlen = BUFF_BYTES_SIZE; // bytes number
 			ret = encode_mono(ctx, inbuf, 2*len, outbuf, &outlen);
 			if (ret < 0) {
-				printf("encode_mono error.\n");
+				fprintf(stderr, "Encode_mono error.\n");
 				return -1;
+			} else if (ret == 1) {
+			    // reach the file end.
+			    break;
 			}
-			// write to output, the output data is in aac format.
-			if (len != fwrite(outbuf, sizeof(byte), outlen, outputfp)) {
-			    printf("write output error.\n");
-				return -1;
-			}
+			int out = fwrite(outbuf, 1, outlen, outputfp);
+			printf("out=%d, outlen=%d\n", out, outlen);
 		}
 	}
 
+	fclose(inputfp);
+	fclose(outputfp);
+	free(inbuf);
+	free(outbuf);
 	close_encoder(ctx);
+	free(ctx);
 	
 	return ret;
 }
@@ -148,7 +154,11 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (mix_pcm_s16le_test(&argv[1], argc - 1) != 0) {
-		printf("mix pcm s16 files done.\n");	
-	}
+    /*if (mix_pcm_s16le_test(&argv[1], argc - 1) != 0) {
+		fprintf(stderr, "ERROR: mix pcm s16 files failed.\n");
+	}*/
+    if (pcms16_mono2aac_test("/home/will/lsm/input.pcm", "/home/will/lsm/test.aac") < 0) {
+        fprintf(stderr, "ERROR: encode pcm s16 file test failed.\n");
+    }
+
 }

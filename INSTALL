@@ -1,5 +1,6 @@
 Install libfdk-aac
-	Download file from http://downloads.sourceforge.net/opencore-amr/fdk-aac-0.1.4.tar.gz.
+	Download file from http://downloads.sourceforge.net/opencore-amr/fdk-aac-0.1.4.tar.gz, 
+	or use the tar file in subdir fdk-acc.
 	CXX='g++ -Wno-narrowing'     \
 	./configure --prefix=/usr    \
             --disable-static &&

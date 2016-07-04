@@ -1,5 +1,6 @@
 # source files.
-OBJECTS = mix aac_enc aac_dec
+FILES= $(wildcard ./src/*.c) 
+OBJECTS =$(notdir $(FILES))
 TARGETS= main
 CC=gcc
 ifeq ($(shell uname -s),Darwin)
@@ -19,10 +20,10 @@ INCLUDES = -I./src/
 
 all:$(TARGETS)
 
-OBJECT = $(OBJECTS:%=%.o)
+OBJECT = $(OBJECTS:%.c=%.o)
 main: $(OBJECT) test.o
 	@echo creating mixtest
-	@$(CC) $(OBJECT:%=$(OBJ_DIR)%) $(OBJ_DIR)test.o -o mixtest $(LIBS)
+	@$(CC) $(OBJECT:%=$(OBJ_DIR)%) $(OBJ_DIR)test.o -o $(OBJ_DIR)mixtest $(LIBS)
 
 test.o:
 	@echo compiling $(@:%.o=%.c)

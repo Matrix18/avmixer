@@ -27,12 +27,12 @@ typedef struct convert_context convert_context;
 /*
  * open aac encoder 
  */
-extern int open_aac_encoder(convert_context** ctx);
+extern int init_aac_encoder(convert_context** ctx);
 
 /*
  * encode pcm to aac 
  */
-extern int encode_mono(convert_context* ctx, byte* pcm_s16_data, int inlen, byte* outdata, int *outlen);
+extern int encode_mono(convert_context* ctx, uint8_t* input_buf, int input_size, byte* outdata, int *outlen);
 
 /*
  * close aac encoder 

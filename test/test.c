@@ -9,7 +9,7 @@
 #include "mix.h"
 #include <string.h>
 #include <errno.h>
-#include "pcm_enc.h"
+#include "aac_enc.h"
 
 typedef enum { 
     false,
@@ -103,7 +103,7 @@ int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
         return -1;
     }
 
-	convert_context *ctx = NULL;
+	encoder_context *ctx = NULL;
 	ret = init_aac_encoder(&ctx);
 	if (ret != 0) {
 		fprintf(stderr, "Open aac encoder error.\n");
@@ -111,7 +111,7 @@ int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
 	}
 	
     uint8_t* inbuf = (uint8_t*)malloc(BUFF_BYTES_SIZE);
-    byte* outbuf = (byte*)malloc(BUFF_BYTES_SIZE);
+    uint8_t* outbuf = (uint8_t*)malloc(BUFF_BYTES_SIZE);
 	
 	while(!feof(inputfp)) {
 		// number of int16_t

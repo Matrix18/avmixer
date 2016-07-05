@@ -20,24 +20,22 @@ typedef enum {
 	PCM_U8
 } PCM_TYPE;
 
-typedef unsigned char byte;
-
-typedef struct convert_context convert_context;
+typedef struct encoder_context encoder_context;
 
 /*
  * open aac encoder 
  */
-extern int init_aac_encoder(convert_context** ctx);
+extern int init_aac_encoder(encoder_context** ctx);
 
 /*
  * encode pcm to aac 
  */
-extern int encode_mono(convert_context* ctx, uint8_t* input_buf, int input_size, byte* outdata, int *outlen);
+extern int encode_mono(encoder_context* ctx, uint8_t* input_buf, int input_size, uint8_t* outdata, int *outlen);
 
 /*
  * close aac encoder 
  */
-extern void close_encoder(convert_context* ctx);
+extern void close_encoder(encoder_context* ctx);
 
 
 #ifdef __cplusplus

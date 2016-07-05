@@ -8,15 +8,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fdk-aac/aacenc_lib.h>
-#include "pcm_enc.h"
+#include "aac_enc.h"
 
 //static HANDLE_AACENCODER hAacEncoder = NULL;
 
-struct convert_context{
+struct encoder_context {
 	HANDLE_AACENCODER hAacEncoder;
 };
 
-int init_aac_encoder(convert_context** ctx)
+int init_aac_encoder(encoder_context** ctx)
 {
 	int ret = 0;
 	AACENC_ERROR err;
@@ -68,14 +68,14 @@ int init_aac_encoder(convert_context** ctx)
         return 1;
     }
 
-	convert_context* context = (convert_context*)malloc(sizeof(convert_context));
-	context->hAacEncoder = hAacEncoder;
+    encoder_context* context = (encoder_context*)malloc(sizeof(encoder_context));
+    context->hAacEncoder = hAacEncoder;
 	*ctx = context;
 
 	return ret;
 }
 
-int encode_mono(convert_context* ctx, uint8_t* input_buf, int input_size, uint8_t* outbuf, int *outlen)
+int encode_mono(encoder_context* ctx, uint8_t* input_buf, int input_size, uint8_t* outbuf, int *outlen)
 {
 	int ret = 0;
     AACENC_InfoStruct info = {0};
@@ -139,14 +139,12 @@ int encode_mono(convert_context* ctx, uint8_t* input_buf, int input_size, uint8_
         fprintf(stderr, "Encoding failed\n");
         return -1;
     }
-
-	// Write output data to file or audio device.
 	*outlen = out_args.numOutBytes;
 
 	return ret;
 }
 
-void close_encoder(convert_context* ctx)
+void close_encoder(encoder_context* ctx)
 {
 	if (ctx->hAacEncoder) {
 		aacEncClose(&ctx->hAacEncoder);	

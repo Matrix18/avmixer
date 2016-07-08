@@ -6,10 +6,11 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "mix.h"
+#include "audio_mix.h"
 #include <string.h>
 #include <errno.h>
 #include "aac_enc.h"
+#include "aac_dec.h"
 
 typedef enum { 
     false,
@@ -90,7 +91,6 @@ end:
 
 int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
 {
-	int ret = 0;
 	FILE *inputfp, *outputfp;
 	inputfp = fopen(inputfile, "rb+");
 	if (inputfp == NULL) {
@@ -104,8 +104,7 @@ int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
     }
 
 	encoder_context *ctx = NULL;
-	ret = init_aac_encoder(&ctx);
-	if (ret != 0) {
+	if (init_aac_encoder(&ctx) != 0) {
 		fprintf(stderr, "Open aac encoder error.\n");
 		return -1;	
 	}
@@ -119,7 +118,7 @@ int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
 		if (len > 0) {
 			// outbuf must be less than inbuf since aac is to compress the pcm.
 			int outlen = BUFF_BYTES_SIZE; // bytes number
-			ret = encode_mono(ctx, inbuf, 2*len, outbuf, &outlen);
+			int ret = encode_mono(ctx, inbuf, 2*len, outbuf, &outlen);
 			if (ret < 0) {
 				fprintf(stderr, "Encode_mono error.\n");
 				return -1;
@@ -139,7 +138,69 @@ int pcms16_mono2aac_test(const char* inputfile, const char* outputfile)
 	close_encoder(ctx);
 	free(ctx);
 	
-	return ret;
+	return 0;
+}
+
+int decode_aac2pcm_test(const char* aacfile, const char* pcmfile)
+{
+    uint8_t *in_buff;
+    INT_PCM *out_buf;
+
+    FILE *inputfp, *outputfp;
+    inputfp = fopen(aacfile, "rb+");
+    if (inputfp == NULL) {
+        fprintf(stderr, "Open file %s failed.\n", aacfile);
+        return -1;
+    }
+    outputfp = fopen(pcmfile, "wb+");
+    if (outputfp == NULL) {
+        fprintf(stderr, "Open file %s failed.\n", pcmfile);
+        return -1;
+    }
+
+    decoder_context *dec_ctx = NULL;
+    if (open_decoder(&dec_ctx) !=0) {
+        fprintf(stderr, "Unable to open decoder.\n");
+        return -1;
+    }
+
+    in_buff = (uint8_t*)malloc(BUFF_BYTES_SIZE);
+    out_buf  = (INT_PCM*)malloc(DECODER_BUFFSIZE * DECODER_MAX_CHANNELS);
+
+    while (!feof(inputfp)) {
+        // number of int16_t
+        int len = fread(in_buff, sizeof(int16_t), BUFF_SIZE, inputfp);
+        if (len < 0) {
+            fprintf(stderr, "Unable to open decoder.\n");
+            return -1;
+        }
+        while (len > 0) {
+            // it may need multiple times to decode in_buff.
+            int size = len;
+            int output_size;
+            int ret = decode_mono(dec_ctx, in_buff, &size, out_buf, &output_size);
+            if (ret < 0) {
+                fprintf(stderr, "decode_mono error.\n");
+                return -1;
+            }
+            // read more data
+            if (ret == 1) {
+                break;
+            }
+            len -= size;
+            in_buff += size;
+
+            int out = fwrite(out_buf, 1, output_size, outputfp);
+            printf("out=%d, output_size=%d\n", out, output_size);
+        }
+    }
+
+    fclose(inputfp);
+    fclose(outputfp);
+    free(out_buf);
+    free(dec_ctx);
+
+    return 0;
 }
 
 
@@ -156,9 +217,17 @@ int main(int argc, char** argv)
 
     /*if (mix_pcm_s16le_test(&argv[1], argc - 1) != 0) {
 		fprintf(stderr, "ERROR: mix pcm s16 files failed.\n");
-	}*/
-    if (pcms16_mono2aac_test("/home/will/lsm/input.pcm", "/home/will/lsm/test.aac") < 0) {
+	}
+    if (pcms16_mono2aac_test("/home/will/avmixer/input.pcm", "/home/will/avmixer/test.aac") < 0) {
         fprintf(stderr, "ERROR: encode pcm s16 file test failed.\n");
     }
+    printf("encode done.\n");
+    */
+
+
+    if (decode_aac2pcm_test("/home/will/avmixer/test.aac", "/home/will/avmixer/decode.pcm") < 0) {
+        fprintf(stderr, "decode pcm s16 file failed.\n");
+    }
+    printf("decode done.\n");
 
 }

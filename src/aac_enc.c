@@ -28,41 +28,26 @@ int init_aac_encoder(encoder_context** ctx)
 		fprintf(stderr, "Unable to open encoder.\n");
 		return -1;
 	}
-	if (aacEncoder_SetParam(hAacEncoder, AACENC_AOT, AOT_AAC_LC) != AACENC_OK) {
-		fprintf(stderr, "Unable to set the aot.\n");
-		return -1;	
-	}
-    if (aacEncoder_SetParam(hAacEncoder, AACENC_SAMPLERATE, 44100) != AACENC_OK) {
-        fprintf(stderr, "Unable to set the sample rate.\n");
-        return -1;
-    }
-    if (aacEncoder_SetParam(hAacEncoder, AACENC_CHANNELMODE, 1) != AACENC_OK) {
-        fprintf(stderr, "Unable to set the channel mode.\n");
-        return -1;
-    }
-    if (aacEncoder_SetParam(hAacEncoder, AACENC_CHANNELORDER, 1) != AACENC_OK) {
-        fprintf(stderr, "Unable to set the wav channel order\n");
-        return -1;
-    }
+
+#define SET_PARAM(P, V) do { \
+        if (aacEncoder_SetParam(hAacEncoder, AACENC_##P, V) != AACENC_OK) { \
+            fprintf(stderr, "Unable to set the" #P" to value:%d.\n", V); \
+            return -1; \
+        } \
+}  while(0)
+
+	SET_PARAM(AOT,AOT_AAC_LC );
+	SET_PARAM(SAMPLERATE, 44100);
+	SET_PARAM(CHANNELMODE, 1);
+	SET_PARAM(CHANNELORDER, 1);
+
     if (vbr) {
-        if (aacEncoder_SetParam(hAacEncoder, AACENC_BITRATEMODE, vbr) != AACENC_OK) {
-            fprintf(stderr, "Unable to set the VBR bitrate mode\n");
-            return 1;
-        }
+        SET_PARAM(BITRATEMODE, vbr);
     } else {
-        if (aacEncoder_SetParam(hAacEncoder, AACENC_BITRATE, 64000) != AACENC_OK) {
-            fprintf(stderr, "Unable to set the bitrate\n");
-            return 1;
-        }
+        SET_PARAM(BITRATE, 64000);
     }
-    if (aacEncoder_SetParam(hAacEncoder, AACENC_TRANSMUX, 2) != AACENC_OK) {
-        fprintf(stderr, "Unable to set the ADTS transmux\n");
-        return -1;
-    }
-    if (aacEncoder_SetParam(hAacEncoder, AACENC_AFTERBURNER, 0) != AACENC_OK) {
-        fprintf(stderr, "Unable to set the afterburner mode\n");
-        return -1;
-    }
+    SET_PARAM(TRANSMUX, 2);
+    SET_PARAM(AFTERBURNER, 0);
     if ((err = aacEncEncode(hAacEncoder, NULL, NULL, NULL, NULL)) != AACENC_OK) {
         fprintf(stderr, "Unable to initialize the encoder\n");
         return 1;

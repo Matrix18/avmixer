@@ -13,30 +13,33 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include <stdint.h>
+#include <fdk-aac/aacdecoder_lib.h>
 
-typedef enum {
-	PCM_UNKNOWN = 0,
-	PCM_S16_LE,
-	PCM_U8
-} PCM_TYPE;
+#define DMX_ANC_BUFFSIZE       128
+#define DECODER_MAX_CHANNELS     6
+#define DECODER_BUFFSIZE      2048 * sizeof(INT_PCM)
 
 typedef struct decoder_context decoder_context;
 
 /*
- * open aac encoder 
+ * open aac decoder
  */
 extern int open_decoder(decoder_context** ctx);
 
 /*
  * decode aac to pcm
  */
-extern int decode_mono(decoder_context* ctx, INT_PCM *output_buf, int *output_size, uint8_t *buffer, int *size);
+extern int decode_mono(decoder_context* ctx, uint8_t *buffer, int *size, INT_PCM *output_buf, int *output_size);
 
 /*
- * close aac encoder 
+ * close aac decoder
  */
 extern void close_decoder(decoder_context* ctx);
 
+/*
+ * flush aac decoder
+ */
+extern void flush_decoder(decoder_context *ctx);
 
 #ifdef __cplusplus
 }

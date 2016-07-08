@@ -22,8 +22,8 @@ all:$(TARGETS)
 
 OBJECT = $(OBJECTS:%.c=%.o)
 main: $(OBJECT) test.o
-	@echo creating mixtest
-	@$(CC) $(OBJECT:%=$(OBJ_DIR)%) $(OBJ_DIR)test.o -o $(OBJ_DIR)mixtest $(LIBS)
+	@echo creating avmixer
+	@$(CC) $(OBJECT:%=$(OBJ_DIR)%) $(OBJ_DIR)test.o -o $(OBJ_DIR)avmixer $(LIBS)
 
 test.o:
 	@echo compiling $(@:%.o=%.c)

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "mix.h"
+#include "audio_mix.h"
 
 /*
  * this algorithm is based on

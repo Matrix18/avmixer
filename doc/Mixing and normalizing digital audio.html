@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<!-- saved from url=(0075)http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html -->
+<html lang="en"><!-- InstanceBegin template="/Templates/basic.dwt" codeOutsideHTMLIsLocked="false" --><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	
+	<!-- InstanceBeginEditable name="doctitle" -->
+	<title>Mixing and normalizing digital audio</title>
+	<!-- InstanceEndEditable -->
+	<meta name="keywords" content="Paul,Vögler,Voegler,digital,audio,stream,mix,mixing,normalize,normalization,logarithmic,dynamic,range,compression">
+	<meta name="description" content="Mixing two digital audio streams with on the fly Loudness Normalization by Logarithmic Dynamic Range Compression">
+	<meta name="robots" content="index,follow">
+
+	<link rel="icon" type="image/png" href="http://www.voegler.eu/images/icon.png">
+	<link rel="apple-touch-icon" type="image/png" href="http://www.voegler.eu/images/touch-icon.png">
+	<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="http://www.voegler.eu/favicon.ico">
+
+	<link rel="stylesheet" type="text/css" href="./Mixing and normalizing digital audio_files/basic.css">
+	<!--[if lt IE 7]>
+		<link rel="stylesheet" type="text/css" href="/styles/ie_lt7.css" />
+	<![endif]-->
+	<!--[if gte IE 7]>
+		<![if lt IE 9]>
+			<link rel="stylesheet" type="text/css" href="/styles/ie_gte7lt9.css" />
+		<![endif]>
+	<![endif]-->
+
+	<!-- InstanceBeginEditable name="head" -->
+	<!-- InstanceEndEditable -->
+	<!-- InstanceParam name="meta_keywords" type="text" value="Paul,Vögler,Voegler,digital,audio,stream,mix,mixing,normalize,normalization,logarithmic,dynamic,range,compression" --><!-- InstanceParam name="meta_description" type="text" value="Mixing two digital audio streams with on the fly Loudness Normalization by Logarithmic Dynamic Range Compression" --><!-- InstanceParam name="meta_robots" type="text" value="index,follow" -->
+</head>
+<div class="head-bar" id="detect" style="z-index: 99999 !important; font-size: 12px !important; color: rgb(51, 51, 51) !important; position: fixed; width: 100%; height: 36px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(193, 193, 193); border-top-width: 1px; border-top-style: solid; border-top-color: rgb(255, 255, 255); background-color: rgb(240, 240, 240) !important;"><img id="baidu_fanyi_logo" src="chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/logo.png" style="position: fixed; left: 15px; top: 6px; height: 21px; width: 66px;"><pt id="detect-left-p" style="font-size: 12px !important; color: rgb(51, 51, 51) !important; position: fixed; left: 120px; top: 12px;">检测到当前网页不是中文网页，是否要翻译成中文？</pt><div id="select-translate-box"></div><div id="detect-translate" style="cursor: pointer !important; border-radius: 3px !important; color: white !important; font-size: 12px !important; text-align: center !important; line-height: 23px !important; padding: initial; position: fixed; margin: 0px; left: 430px; top: 7px; border: none; height: 23px; width: 60px; background-color: rgb(67, 149, 255);">翻译</div><div id="detect-no-translate" style="border-radius: 3px !important; cursor: pointer !important; font-size: 12px !important; color: rgb(51, 51, 51) !important; text-align: center !important; line-height: 23px !important; padding: initial; position: fixed; margin: 0px; left: 500px; top: 7px; border: none; height: 23px; width: 75px; background-color: rgb(251, 251, 251);">不翻译</div><a id="detect-no-more" href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#" style="font-size: 12px !important; color: rgb(51, 51, 51) !important; position: fixed; left: 585px; top: 12px; text-decoration: none;">本网站中不再提示</a><div id="detect-cross"><img id="detect-cross-img" style="cursor: pointer !important; float: right; margin-right: 20px; margin-top: 8px; width: 18px;" src="chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/close.png"></div></div><body style="position: relative; margin-top: 44px !important;">
+
+
+<div id="container">
+	<!-- InstanceBeginEditable name="container" -->
+	<a href="http://www.voegler.eu/">&lt;&lt; back</a>
+	<p class="timestamp">Paul Vögler, 2012-04-20</p>
+	<h1>Mixing two digital audio streams with on the fly Loudness Normalization by Logarithmic Dynamic Range Compression</h1>
+	<h2 id="idx_1">1 Index</h2>
+	<ul class="index">
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_1">1 Index</a></li>
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_2">2 Preface</a></li>
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_3">3 Basics</a>
+			<ul>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_3_1">3.1 Sound Waves</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_3_2">3.2 Analogue Audio Signals</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_3_3">3.3 Digital Audio Signals</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_3_4">3.4 Digital Audio Formats</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_3_5">3.5 Playing back Digital Audio Signals</a></li>
+			</ul>
+		</li>
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_4">4 Mixing Sound</a>
+			<ul>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_4_1">4.1 Mixing two Sound Waves</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_4_2">4.2 Mixing two Digital Sound Sources</a></li>
+			</ul>
+		</li>
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_5">5 Normalization</a>
+			<ul>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_5_1">5.1 Clipping</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_5_2">5.2 Linear Attenuation</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_5_3">5.3 Pre or Post Mixing Normalization</a></li>
+			</ul>
+		</li>
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6">6 Dynamic Range Compression</a>
+			<ul>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6_1">6.1 Linear Dynamic Range Compression</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6_2">6.2 Logarithmic Dynamic Range Compression</a>
+					<ul>
+						<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6_2_1">6.2.1 Derivation of f<sub>l</sub> and f<sub>α</sub></a>
+							<ul>
+								<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6_2_1_1">6.2.1.1 Preliminary considerations</a></li>
+								<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6_2_1_2">6.2.1.2 Developing the function</a></li>
+							</ul>
+						</li>
+						<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6_2_2">6.2.2 Determinig alpha</a>
+							<ul>
+								<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6_2_2_1">6.2.2.1 Solving for alpha</a></li>
+								<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_6_2_2_2">6.2.2.2 Calculating alpha</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_7">7 Viktor T. Toth's method</a></li>
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_8">8 Wave form comparison of different normalization methods</a>
+			<ul>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_8_1">8.1 Source waves and mixed result</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_8_2">8.2 Normalization by dividing by 2</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_8_3">8.3 Normalization by linear compression</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_8_4">8.4 Normalization by logarithmic compression with a threshold</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_8_5">8.5 Normalization by full range logarithmic compression</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_8_6">8.6 Normalization and mixing with Viktor T. Toth's formula</a></li>
+			</ul>
+		</li>
+		<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_9">9 Appendix</a>
+			<ul>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_9_1">9.1 Linear Dynamic Range Compression with thresholds 0, 0.2, 0.5 and 0.8</a></li>
+				<li><a href="http://www.voegler.eu/pub/audio/digital-audio-mixing-and-normalization.html#idx_9_2">9.2 Logarithmic Dynamic Range Compression with thresholds 0, 0.2, 0.5 and 0.8</a></li>
+			</ul>
+		</li>
+	</ul>
+	<h2 id="idx_2">2 Preface</h2>
+	<p>When I first started to experiment with different <a href="http://en.wikipedia.org/wiki/CAPTCHA">CAPTCHA</a> methods, I came across the problem to provide a method for visually impaired people. A common practice is to concatenate the spelling of the codeword. To make things more difficult, I first added some <a href="http://en.wikipedia.org/wiki/Additive_white_Gaussian_noise">white gaussian noise</a> to the audio file. Thinking some more about it, I realized, that that might not be enough.</p>
+	<p>I wanted to add some background noise by exploiting the <a href="http://en.wikipedia.org/wiki/Cocktail_party_effect">Cocktail Party Effect</a>. It was then that I first came across the problem of mixing two digital audio files. Knowing only a little about it, I tried to educate myself and had to realize, that the problem is not as simple as I first thought.</p>
+	<p>As using the built in audio mixing capabilities of today's operating system is not an option for a web service, I tried the most common proposed ways I will explain later.  But I was not satisfied with the result. I then found a <a href="http://www.vttoth.com/CMS/index.php/technical-notes/68">note by Viktor T. Toth</a>, who engaged the problem over a decade ago. I adopted his formula to my needs and had good results - or so I though at least.</p>
+	<p>As I familiarized myself further with the matter of mixing digital audio, I tried to fully understand his formula. In the end I came to the conclusion that his method also cannot be the solution. I will explain why at the end of this document.</p>
+	<p>I then developed the method described in the title. This document summarizes some of my research and explains the process of developing the Logarithmic Dynamic Range Compressor.</p>
+	<h2 id="idx_3">3 Basics</h2>
+	<h3 id="idx_3_1">3.1 Sound Waves</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_wave_pressure.gif" alt="arriving sound wave" width="120" height="120" class="right" longdesc="http://en.wikipedia.org/wiki/File:AC_wave_Positive_direction.gif">Sound waves are mechanical waves that propagate through the medium (air) by displacement. When observed from a fixed point, sound waves produce continuous and varying levels of positive and negative pressure above the mean pressure. The rate over time at which this happens is called the Frequency, the pressure difference, the Amplitude. Therefore sound waves are a bit different from the "normal" waves familiar in water, but behave much in the same way.</p>
+	<p>The higher the frequency, the higher  the pitch of the sound wave is perceived. And the higher the amplitude, the louder that sound wave is perceived.</p>
+	<h3 id="idx_3_2">3.2 Analogue Audio Signals</h3>
+	<p>An analogue audio signal is the continuous electrical representation of sound waves. Let's consider an ordinary microphone. When sound reaches the membrane, it pushes and pulls on this membrane because of the arriving pressure differences.</p>
+	<p>These differences are converted into different voltage levels, let's say from -1V for the maximum detectable negative pressure, though 0V for mean pressure, to +1V for the maximum detectable positive pressure. All voltages in between are possible and reflect the amount of pressure difference. A continouos voltage of 0V means there is no pressure difference over time, hence it's silent.</p>
+	<h3 id="idx_3_3">3.3 Digital Audio Signals</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_adc.png" alt="digital signal (sampled and quantized)" width="220" height="133" class="right" longdesc="http://en.wikipedia.org/wiki/File:Digital.signal.svg">Digital audio is the representation of that signal in binary format. To achieve this, samples of the electrical signal are taken at a fixed rate, called the Sampling Rate. The read level is then converted to a binary number. This step is called Quantization, as not every possible reading can be encoded with full accuracy. There is only a limited number of levels available. That number is determined by the bit depth with which the sampling occurs, called the Resolution. The error made hereby is called Quantization Error, resulting in a worse Signal to Noise Ratio (SNR).</p>
+	<p>For 8 bit samples that means there are just 256 (2 to the power of 8) different levels that can be represented. About half of that for positive levels plus one level for 0, and the other half for negative levels. The hardware device which does this is called the Analogue-Digital-Converter (ADC). The method is called Pulse Code Modulation (PCM), where each sample is represented by the same amount of bits (e.g. 8).</p>
+	<h3 id="idx_3_4">3.4 Digital Audio Formats</h3>
+	<p>The digital audio format describes the way the digital audio signal is stored and transmitted. There are many digital audio formats around, some of which use additional compression techniques to reduce the amount of data, like MP3.</p>
+	<p>Another common format is the Microsoft WAV-Format. In most cases it is used to store uncompressed PCM values. The most common PCM resolutions are 8, 16 and 32 bit, with 8 and 16 bit being encoded as integer values (whole numbers) and 32 bit as floating point numbers (fractions).</p>
+	<p>Integer values above 8 bits per sample are stored as signed integer values, i.e. they have a positive and negative range with the mid point at 0. 8 bits and below are special in that they are stored as unsigned values. That is, levels from 0 to half the range represent negative amplitudes (0 being the highest negative amplitude) and above for positive amplitudes. For 8 bit that means 0-127 are negative amplitudes, 128 is the mid point and 129 to 255 are positive amplitudes. They can easyly be transformed into signed values by substracting half the range (-128 for 8 bit).</p>
+	<p>PCM floating point numbers are in the range of -1 to 1 with 0 as the mid point and fractions in between.</p>
+	<p>One format can be transformed into another format (and back) without loss, as long as the new format's range is at least as big as the source's. That is why mixing and mastering is often done in 32 bits exclusively for higher accuracy, and only the result is then published in 16 bits (e.g. Audio CD).</p>
+	<p>For all practical purposes to come, every integer PCM value can be transformed into a floating point PCM value in the range of -1 to 1 and back without loss of information or introduction of additional noise.</p>
+	<h3 id="idx_3_5">3.5 Playing back Digital Audio Signals</h3>
+	<p>The reverse process is done by the Digital-Analogue-Converter (DAC). It tries to restore the original electrical voltage levels continously and as accurate and smooth as possible. The amplifier then does it's job, and the speakers attached to it's output create positive and negative pressure waves, thus replaying the sound.</p>
+	<h2 id="idx_4">4 Mixing Sound</h2>
+	<h3 id="idx_4_1">4.1 Mixing two Sound Waves</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_interference.png" alt="wave interference" width="365" height="122" class="right" longdesc="http://en.wikipedia.org/wiki/File:Interference_of_two_waves.svg">Mixing two sound waves is basically observing their interference. When waves hit each other, they can interfere constructively or destructively. That is, two wave crests form a bigger wave crest, a crest and a valley cancel each other out and two valleys form a bigger valley. If wave crests are defined as being above 0 and valleys being below 0, the result is simply adding both values.</p>
+	<p>More complex sounds, like music or speech, are merely the result of mixing sound waves of different frequencies,  amplitudes and phases (left or right shift).</p>
+	<p>That is why a choire is the louder, the more people are singing and the better they are synchronized. Active noise cancellation devices try doing the opposite by producing a "counter wave", that cancels out as much of the unwanted sound as possible.</p>
+	<p>The reason why we don't perceive the two waves as exactly twice as loud as each individual wave, is for the complicated way we perceive loudness. In reality, our perception of loudness not only varies non-linearly with the amplitude, but also with the frequency and duration of a sound. There are models that try to formalize this, but this is beyond this article.</p>
+	<p>The important thing to note here is, that in general we are more perceptible to  changes of small amplitudes than we are of large amplitudes.</p>
+	<h3 id="idx_4_2">4.2 Mixing two Digital Sound Sources</h3>
+	<p>As seen above, mixing two digital sound sources of the same sample rate and resolution that encode positive pressure as positive values and negative pressure as negative values, is as simple as adding the pair of sample values.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_add.png" alt="C = A + B" width="127" height="23"></p>
+	<p>Where A and B are the samples of either source at the same time and C is the mixed sample at that time.</p>
+	<p>The problem now is, that when adding the two values, the result may over- or underflow the range available. The sum of A and B can be double the maximum (or minimum) value within the resolution's range in a worst-case-scenario. </p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_org.png" alt="3D graph of A+B" width="420" height="460" class="left">The graph shows the result of A + B. </p>
+	<p>Most possible combinations are between the dark blue lines, which mark the boundary for C being below -1 or above 1.</p>
+	<p>The  yellow line marks the 0-level, where all combinations of A + B = 0 are.</p>
+	<p>The light green box marks the valid rage for A, B and C and is the area shown in all other 3D graphs below.</p>
+	<p>All graphs assume working with floating point PCM values in the range of -1 to 1.</p>
+	<h2 id="idx_5">5 Normalization</h2>
+	<p>To account for the problem above, some sort of method has to be applied to get the values of the resulting signal back into the valid range. This process is called normalization.</p>
+	<h3 id="idx_5_1">5.1 Clipping</h3>
+	<p>The simplest way to do this is by clipping. Values out of range are simply cut off and encoded using the maximum or minimum value possible. As a result "clicking" and "popping" may occur, as the original sound wave cannot be reconstructed properly.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_add_clip.png" width="379" height="29" alt="C = min(C_{max}, max(C_{min}, A + B))"></p>
+	<p>Where C<sub>max</sub> is the maximum, and C<sub>min</sub> the minimum value within the range of the resolution.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_lin_10.png" alt="3D graph of A+B clipped" width="420" height="460" class="left">The graph shows the result of A + B with all sums below -1 or above 1 clipped.</p>
+	<p>Compared to the first graph, the flaps below and above the blue lines are sharply folded, so that they don't exceed the valid range.</p>
+	<p>Although the middle part looks as it should be, it is not hard to imagine why the result is far from optimal, as many combinations get the same value for C.</p>
+	<p>This would only then not be a problem, if there are no combinations of A + B that are below -1 or above 1.</p>
+	<h3 id="idx_5_2">5.2 Linear Attenuation</h3>
+	<p>When mixing two audio sources without prior knowledge of their maximum range used, and without a second pass, one way to be sure to stay within the resolution's limits is, if the sources volumes are adjusted considering a worst-case-scenario. An easy way to achieve this is by simply dividing the result by 2.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_add_norm2.png" width="129" height="54" alt="C = \frac{A + B}{2}"></p>
+	<p>This way the mixed sample is assured to stay within range. The problem with this method is, that in addition to reducing the resolution of each source to half of what it used to be (if the output range is the same as the input range), and thus increasing the quantization error, each individual source is attenuated (it's loudness reduced) as well.</p>
+	<p>That is why, when using this method, the perception of the result is to not have enough volume. The most obvious case is when one source is just silence. The result would be the other source with all amplitudes halfed, a reduction in volume by about 6 dB.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_lin_00.png" alt="3D graph of (A+B)/2" width="420" height="460" class="left">The graph shows the result of A + B with the result normalized by dividing by 2.</p>
+	<p>Compared to the first graph, the plane is squeezed together from both ends beyond the blue line.</p>
+	<p>The yellow line is acting as an anchor, fixing the width and position of the plane, but allowing it to tilt so that both corners are in the extreme position.</p>
+	<p>The effect of this squeezing is, that every amplitude is attenuated.</p>
+	<h3 id="idx_5_3">5.3 Pre or Post Mixing Normalization</h3>
+	<p>If both sources and their amplitudes at any given time are known in advance, or knowing the maximum absolute amplitude after mixing, the volume of the sources can be adjusted to ensure they stay within range after mixing. Implementation constraints aside, adjusting before, after or at mixing is equivalent.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_add_normmax.png" width="360" height="79" alt="C = \frac{A + B}{\frac{max(\{\vert A_i + B_i \vert\})}{\frac{C_{range}}{2}}} \quad \forall i \in \mathbb{N}, i \leq T"></p>
+	<p>Where T is the length of the signals in number of samples, i any sample number, A<sub>i</sub> and B<sub>i</sub> a pair of samples at the same time and C<sub>range</sub> the distance between the minimum and the maximum values (float) or the number of levels in the resolution (integer).</p>
+	<p>This can be interpreted as follows. To get a mixed sample C, divide every A + B by the following divisor:<br>
+		Find the maximum absolute amplitude (positive or negative) that can result from adding a pair of samples A<sub>i</sub> and B<sub>i</sub> within the entire length of the signals to be mixed and set it in relation to the maximum absolute value possible to encode (C<sub>range</sub> / 2).</p>
+	<p>i.e. If the range was from -1 to 1, C<sub>range</sub> would be 2 and C<sub>range</sub> / 2 = 1. If the maximum absolute amplitude of any A + B was 1.2 (either +1.2 or -1.2), each sample pair would have to be divided by  1.2 (=1.2 / 1).</p>
+	<p>This should probably only be done if the maximum absolute amplitude found is above C<sub>range</sub> / 2. Otherwise the mixed signal is boosted. This may or may not be a desired effect.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_lin_12.png" alt="3D graph of A + B normalized by max amplitude" width="420" height="460" class="left">The Graph shows the result of A + B with the result normalized by dividing by 1.2.</p>
+	<p>There are no flaps in this graph, as the maximum absolute amplitude for any sum of A<sub>i</sub> and B<sub>i</sub> found was 1.2.</p>
+	<p>Compared to the first graph, the plane is slightly squeezed (and tilted) until all amplitudes fit within the green box.</p>
+	<p>One example would be A = -0.2 and B = -1. The sum of both is -1.2 and after normalizing with 1.2 the result for C is -1.</p>
+	<p>The effect is, that the mixed sound  uses the maximum possible resolution (the whole range).</p>
+	<h2 id="idx_6">6 Dynamic Range Compression</h2>
+	<p>Another way to make sure to stay within range but at the same time preserve the fidelity of low- to mid-level amplitudes, is to attenuate the level after mixing only if it exceeds a certain threshold. This way, depending on the setting of the threshold, most of the possible combinations of adding A and B retain their original mixed value. Only the (very) loud values above that threshold get compressed into a smaller space. Because we are not as perceptibe to amplitude changes in the upper range, the effect is less noticeable.</p>
+	<h3 id="idx_6_1">6.1 Linear Dynamic Range Compression</h3>
+	<p>Amplitudes above the threshold are linearly compressed into the space left by a compression factor. This factor is determined by the threshold to ensure every combination of A + B fits within the resolution's range.</p>
+	<p>The following formulas assume working with floating point values in the range of -1 to 1.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_defs_xt.png" width="421" height="25" alt="x \in \mathbb{R} \wedge -2 \leq x \leq 2;\; t \in \mathbb{R} \wedge 0 \leq t &lt; 1"></p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_fi.png" alt="f_{i}(x;t)=\begin{cases} x &amp; -t \leq x \leq t;\\ \frac{x}{\lvert x \rvert}\cdot\left(t+\frac{1-t}{2-t}\cdot(\lvert x \rvert -t)\right) &amp; \lvert x \rvert &gt;t \end{cases}" width="521" height="79"></p>
+	<p>Where x is the mixed sample of A and B to be normalized, and t the threshold.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_lin_06.png" alt="3D graph of A + B linearly compressed with a threshold of 0.6" width="420" height="460" class="left">The graph shows C = f<sub>i</sub>(A + B; 0.6).</p>
+	<p>C is the sum of A and B linearly compressed by the function f<sub>i</sub> with a threshold of 0.6.</p>
+	<p>All (absolute) amplitudes below 0.6 retain their original value. From 0.6 to 2, amplitudes are linearly attenuated to fit within the range.</p>
+	<p>The effect is that all possible amplitudes fit within the range. Low and medium sound levels have good volume.</p>
+	<p>Because high amplitudes are suddently attenuated, the result may sound like there was an unexpected drop in volume when switching from low or medium sound to loud.</p>
+	<h3 id="idx_6_2">6.2 Logarithmic Dynamic Range Compression</h3>
+	<p>Amplitudes above the threshold are logarithmically compressed into the space left by a dynamic compression factor. The aim is to smoothen out the effect at the threshold as well as exploiting our non linear loudness perception. Amplitudes further away from the threshold are comressed with an ever increasing factor.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_defs_xt.png" width="421" height="25" alt="x \in \mathbb{R} \wedge -2 \leq x \leq 2;\; t \in \mathbb{R} \wedge 0 \leq t &lt; 1"></p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_fl.png" width="638" height="98" alt="f_{l}(x;t)=\begin{cases} x &amp; -t \leq x \leq t;\\ \frac{x}{\lvert x \rvert}\cdot\left(t+(1-t)\cdot\frac{\ln\bigl(1+f_{\alpha}(t)\cdot\frac{\lvert x \rvert -t}{2-t}\bigr)}{\ln\bigl(1 + f_{\alpha}(t)\bigr)}\right) &amp; \lvert x \rvert &gt;t \end{cases}"></p>
+	<p>Where x is the mixed sample of A and B to be normalized, and t the threshold. See below for a definition of the function f<sub>α</sub>.</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_log_06.png" alt="3D graph of A + B logarithmically compressed with a threshold of 0.6" width="420" height="460" class="left">The graph shows C = f<sub>l</sub>(A + B; 0.6).</p>
+	<p>C is the sum of A and B logarithmically compressed by the function f<sub>l</sub> with a threshold of 0.6.</p>
+	<p>All (absolute) amplitudes below 0.6 retain their original value. From 0.6 to 2, amplitudes are logarithmically attenuated to fit within the range.</p>
+	<p>The effect is that all possible amplitudes fit within the range. Low to high sound levels have good volume.</p>
+	<p>Only very high amplitudes have less resolution and are compressed into a smaller space compared to linear compression.</p>
+	<p>Because high amplitudes are only gradually attenuated with a smooth crossing, the attenuation is barely noticeable.</p>
+	<h4 id="idx_6_2_1">6.2.1 Derivation of f<sub>l</sub> and f<sub>α</sub></h4>
+	<h5 id="idx_6_2_1_1">6.2.1.1 Preliminary considerations</h5>
+	<p>The goal is to find a suitable method to normalize a mixture of two audio streams on the fly with as little noticeable effect as possible. The two most common recommended methods when browsing the web on that subject are clipping and linear attenuation by dividing by 2. The former is prone to produce distortion in the form of clicking and popping, the latter noticeably attenuates the volume.</p>
+	<p>There are methods like<a href="http://en.wikipedia.org/wiki/Dynamic_range_compression"> Dynamic Range Compression</a> (DRC) that are used in broadcasting and production environments. These systems often adjust volume levels by monitoring the output with a feedback or feed-forward loop.</p>
+	<p><strong>The goal here is to find a function that projects the input range (-2 to 2) to the output range (-1 to 1)  on the fly and independent of the stream behind or ahead while avoiding disturbing noises and still having a decent output volume in all possible situations.</strong></p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_drc.png" alt="graph showing linear and logarithmic compression" width="500" height="500" class="right">The graph to the right shows different projections from input (A + B) to output values. Because the negative and positive range are exactly the same only with opposite sign, it is sufficient to only look at the positive range for now.</p>
+	<p>If no means for normalization are applied, the result is the red (and dark green) line, which overflows the desired target range from 0 to 1.</p>
+	<p>The magenta line shows the result if all output levels are normalized by dividing by 2.</p>
+	<p>The light green line shows the result of linearly compressing, i.e. with a fixed compression factor, the values above the threshold at 0.6 into the target range.</p>
+	<p>The effect of the blue cuve is compressing ever higher values with an ever increasing compression factor, thus leaving the relatively lower amplitudes more space (resolution) to be compressed in.</p>
+	<h5 id="idx_6_2_1_2">6.2.1.2 Developing the function</h5>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_log-2-3-10.png" alt="graph showing log_b(x) for base 2, 3 and 10" width="309" height="203" class="right">A logarithmic function seems to be a logical choice here, because it has all the properties we are looking for. It is strictly monotonically increasing at an ever sligther rate, thus slighly but steadily increasing the compression factor.</p>
+	<p>Therefore, to find the function that describes the blue line above, we begin with the basic logarithmic function <img src="./Mixing and normalizing digital audio_files/audio_math_fxlogbx.png" alt="f(x) = log_b(x)" width="106" height="19" class="math">.</p>
+	<p>The graph to the right shows the log function for base 2 (blue), 3 (green) and 10 (red).</p>
+	<p>We are only interested in the positive part of the log function. Because all log functions cross from positive to negative values at 1, we add +1 inside the log function: <img src="./Mixing and normalizing digital audio_files/audio_math_fxlogb1x.png" alt="f(x) = log_b(1 + x)" width="133" height="19" class="math">.</p>
+	<p>We now have to adjust our input value x to be 0 for this function when we are at the threshold: <img src="./Mixing and normalizing digital audio_files/audio_math_fxlogb1xt.png" alt="f(x) = log_b(1 + (x - t))" width="172" height="19" class="math">. This in effect shifts the log function on the horizontal axis.</p>
+	<p>We then shift the function vertically to take the value of the threshold when x is at the threshold: <img src="./Mixing and normalizing digital audio_files/audio_math_fxtlogb1xt.png" alt="f(x) = t + log_b(1 + (x - t))" width="199" height="19" class="math">.</p>
+	<p>We now have to bend the function such that it takes the value 1 when x is 2. We do this by first normalizing our input value  to be in the range of 0 to 1 independent of the threshold: <img src="./Mixing and normalizing digital audio_files/audio_math_fxtlogb1xt2t.png" alt="f(x) = t + log_b(1 + \textstyle \frac{x - t}{2 - t})" width="174" height="22" class="math">.</p>
+	<p>For a given base b = 2 the log function would now return the value 0 for x = t and 1 for x = 2 because log<sub>2</sub>(1) = 0 and log<sub>2</sub>(2) = 1. We now have to squeeze the log function vertically to return values in the range of 0 to (1 - t), because we already added t to our function and thus that's the range we want the log function to work in: <img src="./Mixing and normalizing digital audio_files/audio_math_fxt1tlog21xt2t.png" alt="f(x) = t + (1 - t) \cdot log_2(1 + \textstyle \frac{x - t}{2 - t})" width="233" height="22" class="math">.</p>
+	<p>Because we want to have control over the base of the log function, we introduce a new parameter α and use the fact that log<sub>b</sub>(x) = ln(x) / ln(b):</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_defs_alphatx.png" width="567" height="25" alt="\alpha \in \mathbb{R} \wedge 0 &lt; \alpha;\; t \in \mathbb{R} \wedge 0 \leq t &lt; 1;\; x \in \mathbb{R} \wedge t \leq x \leq 2"></p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_fxalphat.png" alt="f(x) = t+(1-t)\cdot \frac{\ln(1+\alpha\cdot\frac{x-t}{2-t})}{\ln(1+\alpha)}" width="365" height="67"></p>
+	<p>Where x is the positive input value above the threshold t and α determines the base for the logarithmic function.</p>
+	<h4 id="idx_6_2_2">6.2.2 Determinig alpha</h4>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_logdrc-1-4-20.png" alt="graph showing f(x) at t = 0.5 with three different values for alpha: 1, 4 and 20" width="495" height="489" class="right">The parameter α controls the rate at which the log function grows, or in other words the amount of curveature.</p>
+	<p>The graph to the right shows three different values for α with a threshold t = 0.5. For ogange is α = 1, for blue α = 4 and for purple α = 20.</p>
+	<p>A suitable choice for α would be the one that has the smoothest transition from the red line into the curve at the threshold.</p>
+	<p>It is easy to see that α must be dependant on t, the threshold.</p>
+	<p>The smoothest transition possible is, when the slope of the curve matches the slope of the red line at the threshold.</p>
+	<p>The slope of the red line is always equal to 1.</p>
+	<p>For the slope of the function f(x) from above to be 1 at the threshold, the first derivative of the function has to be 1 at the threshold, where x = t.</p>
+	<h5 id="idx_6_2_2_1">6.2.2.1 Solving for alpha</h5>
+	<p>When finding the first derivative f'(x) for f(x) and solving for α at the point x<sub>0</sub> = t we get:</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_fdx.png" alt="\begin{split} f(x) &amp;= t+(1-t)\cdot\frac{\ln(1+\alpha\cdot\frac{x-t}{2-t})}{\ln(1+\alpha)}\\ f&#39;(x_0) &amp;= \frac{\alpha\cdot(1-t)}{\ln(1+\alpha)\cdot(2-t+\alpha x_0-\alpha t)}\\ f&#39;(t) &amp;\stackrel{!}{=} 1\;\Rightarrow\\ 1 &amp;= \frac{\alpha\cdot(1-t)}{\ln(1+\alpha)\cdot(2-t)}\\ \sqrt[\alpha]{1+\alpha} &amp;= e^{\frac{1-t}{2-t}} \end{split}" width="433" height="283"></p>
+	<p>Unfortunately we cannot solve for α directly here, so we define the function:</p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_falpha.png" alt="f_{\alpha}(t):=\left\{\alpha:\sqrt[\alpha]{1+\alpha} = e^{\frac{1-t}{2-t}}\;\mid\;t\in \mathbb{R}\wedge 0 \leq t &lt; 1\;;\alpha \in \mathbb{R}\wedge\alpha&gt;0\right\}" width="713" height="50"></p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_falpha_lim.png" alt="f_{\alpha}(0)\approx 2.51286;\;f_{\alpha}(0.5)\approx 5.71144;\;\lim_{t \to 1}f_{\alpha}(t)=\infty" width="548" height="38"></p>
+	<h5 id="idx_6_2_2_2">6.2.2.2 Calculating alpha</h5>
+	<p>The equasion <img src="./Mixing and normalizing digital audio_files/audio_math_alpha-t.png" alt="\sqrt[\alpha]{1+\alpha} = e^{\frac{1-t}{2-t}}" width="108" height="22" class="math"> can be solved with an iterative method:</p>
+	<pre>1.  Pick a threshold t.
+2.  Calculate the right side of the equasion.
+3.  Take an initial guess for a lower bound and an upper bound for alpha. 2.5 is a safe lower bound.
+4.  Calculate the left side of the equasion for the lower bound and the upper bound of alpha.
+5.  If the lower bound solution is below the right side, start over at step 3 with a lower lower bound.
+    The old lower bound is now a safe upper bound.
+6.  If the upper bound solution is above the right side, start over at step 3 with a higher upper bound.
+    The old upper bound is now a safe lower bound.
+7.  If the difference between the upper bound and lower bound is smaller than the desired precision,
+    approximate alpha linerarly and stop.
+8.  Calculate the left side of the equasion for the mid point between lower and upper bound.
+9.  If the mid point solution is above the right side,
+    make the mid point the new lower bound and go to step 4.
+10. Make the mid point the new upper bound and go to step 4.</pre>
+	<form method="get" action="http://www.voegler.eu/pub/audio/ldrc_alpha.php">
+		Calculate a list of values for alpha with
+		<select name="resolution">
+			<option value="5">5</option>
+			<option value="10">10</option>
+			<option selected="selected" value="20">20</option>
+			<option value="40">40</option>
+			<option value="50">50</option>
+			<option value="100">100</option>
+		</select>
+		steps for t and a precision of
+		<select name="precision">
+			<option value="0">0</option>
+			<option value="1">1</option>
+			<option selected="selected" value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+		</select>
+		decimal places:
+		<input type="submit" value="GO!">
+	</form>
+	<h2 id="idx_7">7 Viktor T. Toth's method</h2>
+	<p>His formula was developed for unsigned amplitude values with an input / output range from 0 to 1 and a baseline of 0.5. The formula can be easily transformed to handle ranges from -1 to 1 equivalently.</p>
+	<p>He came up with the formula by this thought process:</p>
+	<p class="cite">"If we have two signals, A and B, and either A or B has a value at the midpoint (representing silence), we want the other to appear on the output in unchanged form. If either A or B has an extremal value (minimum or maximum) we want that extremal value to appear on the output. If both A and B are below the midpoint, the result should be further below the midpoint than either A and B; if both are above the midpoint then similarly, the result should be higher than either of them. Lastly, if A and B are on opposite sides of the midpoint, the result should represent the fact that the two signals are cancelling each other out to some extent." <span class="source">[<a href="http://www.vttoth.com/CMS/technical-notes/68-mixing-digital-audio">Mixing digital audio</a>; Viktor T. Toth; 2000]</span></p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_math_vtooth.png" width="635" height="79"></p>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_Toth.png" width="420" height="460" class="left">The thing that is most obvious in this graph is, that the graph is not symmetric. Ideally the result should be symmetric when you invert all values.</p>
+	<p>Because the function has a different formula in case both values are below the baseline versus the other two possibilities, there is a coarse transition in the surface of the combined function. </p>
+	<p>If at least one value for A or B is at a maximum or minimum, the other value has no effect on the output. In this image this is visible by the graph being clamped to the axes at the top and bottom.</p>
+	<p>Overall, the graph is curved towards high values, which also affects the signals "<span class="cite">cancelling each other out to some extent</span>".</p>
+	<p>The results can be observed in the wave form comparison below in the missing symmetry, the sharp and sudden changes in values and the missing wave crests and valleys compared to the natural mix.</p>
+	<p>In short, the mixed result with this function is far from the original.</p>
+	<h2 id="idx_8">8 Wave form comparison of different normalization methods</h2>
+	<h3 id="idx_8_1">8.1 Source waves and mixed result</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_wav_overlay.png" alt="Wave forms of 1kHz and 400Hz sine waves and their mixed result" width="545" height="310" class="left">The blue line is a sine wave at the frequency of 1000Hz.</p>
+	<p>The yellow line is a sine wave at the frequency of 400Hz.</p>
+	<p>The green line is the mixed result of both waves.</p>
+	<p>The source waves use half the dynamic range, up to -6dB.</p>
+	<p>The result uses the full dynamic range and technically would not need to be normalized, albeit it may be perceived as overdriven.</p>
+	<h3 id="idx_8_2">8.2 Normalization by dividing by 2</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_wav_mixed_lin_00.png" alt="Normalized wave form by dividing by 2" width="545" height="310" class="left">The compression factor is 2:1 for every sample.</p>
+	<p>Although the waveform is perfect in every way, the result is a loss of loudness for each individual sound by 6dB.</p>
+	<h3 id="idx_8_3">8.3 Normalization by linear compression</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_wav_mixed_lin_06.png" alt="Normalized wave form by linear compression with a threshold of 0.6" width="545" height="310" class="left">The threshold used is 0.6 (around -4.5dB).</p>
+	<p>When the threshold is reached, amplitudes are suddently compressed with a compression factor of 3.5.</p>
+	<p>The result is an unsmooth transition, seen in the sharp edges near the top of the largest wave crests and valleys.</p>
+	<h3 id="idx_8_4">8.4 Normalization by logarithmic compression with a threshold</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_wav_mixed_log_06.png" alt="Normalized wave form by logarithmic compression with a threshold of 0.6" width="545" height="310" class="left">The threshold used is 0.6 (around -4.5dB).</p>
+	<p>Beyond the threshold, amplitudes are compressed with increasing compression factors from 1 to about 8.5 at maximum for increasing amplitudes.</p>
+	<p>The result is a smooth transition to compressed amplitudes at the threshold while leaving more resolution to lower amplitudes than higher amplitudes. </p>
+	<h3 id="idx_8_5">8.5 Normalization by full range logarithmic compression</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_wav_mixed_log_00.png" alt="Normalized wave form by logarithmic compression with a threshold of 0" width="545" height="310" class="left">The threshold used is 0 (baseline).</p>
+	<p>The full dynamic range is compressed.</p>
+	<p>The initial compression factor is 1, meaning no compression. It slightly increases with increasing amplitudes to about 3.5 at the maximum.</p>
+	<h3 id="idx_8_6">8.6 Normalization and mixing with Viktor T. Toth's formula</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_wav_mixed_Toth.png" alt="Mixed and normalized wave form with Viktor T. Toth&#39;s formula" width="545" height="310" class="left">Although the amplitudes stay within range, the wave form is distorted beyond recognition.</p>
+	<p>The wave form is not symmetric.</p>
+	<p>There are coarse and sudden changes is values.</p>
+	<p>High values dominate.</p>
+	<p>Some transitions between increasing and decreasing pressures are lost.</p>
+	<h2 id="idx_9">9 Appendix A</h2>
+	<h3 id="idx_9_1">9.1 Linear  Dynamic Range Compression with thresholds 0, 0.2, 0.5 and 0.8</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_lin_00.png" width="420" height="460"><img src="./Mixing and normalizing digital audio_files/audio_added_lin_02.png" width="420" height="460"><img src="./Mixing and normalizing digital audio_files/audio_added_lin_05.png" width="420" height="460"><img src="./Mixing and normalizing digital audio_files/audio_added_lin_08.png" width="420" height="460"></p>
+	<h3 id="idx_9_2">9.2 Logarithmic Dynamic Range Compression with thresholds 0, 0.2, 0.5 and 0.8</h3>
+	<p><img src="./Mixing and normalizing digital audio_files/audio_added_log_00.png" width="420" height="460"><img src="./Mixing and normalizing digital audio_files/audio_added_log_02.png" width="420" height="460"><img src="./Mixing and normalizing digital audio_files/audio_added_log_05.png" width="420" height="460"><img src="./Mixing and normalizing digital audio_files/audio_added_log_08.png" width="420" height="460"></p>
+	<p class="timestamp">last update 2012-08-29</p>
+	<a href="http://www.voegler.eu/">&lt;&lt; back</a> &nbsp; <a href="http://www.voegler.eu/contactform.html">&gt;&gt; give feedback</a>
+	<!-- InstanceEndEditable -->
+</div>
+<div id="noie" style="display: none;">
+	<a href="http://www.mozilla.org/"></a>
+</div>
+
+
+
+<!-- InstanceEnd -->
+<div style="position: static; width: 0px; height: 0px; border: none; padding: 0px; margin: 0px;"><div id="trans-tooltip"><div id="tip-left-top" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-left-top.png&quot;);"></div><div id="tip-top" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-top.png&quot;) repeat-x;"></div><div id="tip-right-top" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-right-top.png&quot;);"></div><div id="tip-right" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-right.png&quot;) repeat-y;"></div><div id="tip-right-bottom" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-right-bottom.png&quot;);"></div><div id="tip-bottom" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-bottom.png&quot;) repeat-x;"></div><div id="tip-left-bottom" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-left-bottom.png&quot;);"></div><div id="tip-left" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-left.png&quot;);"></div><div id="trans-content"></div></div><div id="tip-arrow-bottom" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-arrow-bottom.png&quot;);"></div><div id="tip-arrow-top" style="background: url(&quot;chrome-extension://ikkbfngojljohpekonpldkamedehakni/imgs/map/tip-arrow-top.png&quot;);"></div></div></body></html>

@@ -37,11 +37,11 @@ threshold   	alpha
     0.9         41.15
     0.95        96.09
 
-						 x-t
-				 ln(1+α* ---)
-						 c-t
+		 	 x-t
+		 ln(1+α* ---)
+			 c-t
 f(x) = t + (1-t)*------------
-			        ln(1+α)
+		   ln(1+α)
 or
 f(x) = t + (1-t)*ln(1+α*(x-t)/(c-t))/ln(1+α)
 In the formula above,
@@ -93,7 +93,7 @@ static const threshold_alpha ta_table[20] = {
  * @sum  the sum of samples
  * @c    the number of channels
  */
-static float pcm_compress(int t, int c, int16_t sum)
+static float pcm_compress(int t, int c, int sum)
 {
 	float x = 1;
 	// x has range [0, c]

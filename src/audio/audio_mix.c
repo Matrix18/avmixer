@@ -90,10 +90,11 @@ static const threshold_alpha ta_table[20] = {
 
 /*
  * calculate compression ratio
- * @sum  the sum of samples
- * @c    the number of channels
+ * @t    threshold
+ * @sum  sum of samples
+ * @c    number of channels
  */
-static float pcm_compress(int t, int c, int sum)
+static float pcm_compress(float t, int c, int sum)
 {
 	float x = 1;
 	// x has range [0, c]
